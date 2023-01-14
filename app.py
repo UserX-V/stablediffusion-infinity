@@ -278,15 +278,11 @@ class StableDiffusionInpaint:
             else:
                 model_name = model_path
         vae = AutoencoderKL.from_pretrained("stabilityai/sd-vae-ft-mse")
-        if device == "cuda" and not args.fp32:
-            vae.to(torch.float16)
         if original_checkpoint:
             print(f"Converting & Loading {model_path}")
             from convert_checkpoint import convert_checkpoint
 
             pipe = convert_checkpoint(model_path, inpainting=True)
-            if device == "cuda" and not args.fp32:
-                pipe.to(torch.float16)
             inpaint = StableDiffusionInpaintPipeline(
                 vae=vae,
                 text_encoder=pipe.text_encoder,
@@ -298,18 +294,9 @@ class StableDiffusionInpaint:
             )
         else:
             print(f"Loading {model_name}")
-            if device == "cuda" and not args.fp32:
-                inpaint = StableDiffusionInpaintPipeline.from_pretrained(
-                    model_name,
-                    revision="fp16",
-                    torch_dtype=torch.float16,
-                    use_auth_token=token,
-                    vae=vae,
-                )
-            else:
-                inpaint = StableDiffusionInpaintPipeline.from_pretrained(
+            inpaint = StableDiffusionInpaintPipeline.from_pretrained(
                     model_name, use_auth_token=token, vae=vae
-                )
+            )
         if os.path.exists("./embeddings"):
             print("Note that StableDiffusionInpaintPipeline + embeddings is untested")
             for item in os.listdir("./embeddings"):
@@ -456,15 +443,11 @@ class StableDiffusion:
             else:
                 model_name = model_path
         vae = AutoencoderKL.from_pretrained("stabilityai/sd-vae-ft-mse")
-        if device == "cuda" and not args.fp32:
-            vae.to(torch.float32)
         if original_checkpoint:
             print(f"Converting & Loading {model_path}")
             from convert_checkpoint import convert_checkpoint
 
             pipe = convert_checkpoint(model_path)
-            if device == "cuda" and not args.fp32:
-                pipe.to(torch.float32)
             text2img = StableDiffusionPipeline(
                 vae=vae,
                 text_encoder=pipe.text_encoder,
@@ -476,18 +459,9 @@ class StableDiffusion:
             )
         else:
             print(f"Loading {model_name}")
-            if device == "cuda" and not args.fp32:
-                text2img = StableDiffusionPipeline.from_pretrained(
-                    model_name,
-                    revision="fp32",
-                    torch_dtype=torch.float32,
-                    use_auth_token=token,
-                    vae=vae,
-                )
-            else:
-                text2img = StableDiffusionPipeline.from_pretrained(
+            text2img = StableDiffusionPipeline.from_pretrained(
                     model_name, use_auth_token=token, vae=vae
-                )
+            )
         if inpainting_model:
             # can reduce vRAM by reusing models except unet
             text2img_unet = text2img.unet
@@ -500,20 +474,11 @@ class StableDiffusion:
             import gc
 
             gc.collect()
-            if device == "cuda" and not args.fp32:
-                inpaint = StableDiffusionInpaintPipeline.from_pretrained(
-                    "runwayml/stable-diffusion-inpainting",
-                    revision="fp32",
-                    torch_dtype=torch.float32,
-                    use_auth_token=token,
-                    vae=vae,
-                ).to(device)
-            else:
-                inpaint = StableDiffusionInpaintPipeline.from_pretrained(
+            inpaint = StableDiffusionInpaintPipeline.from_pretrained(
                     "runwayml/stable-diffusion-inpainting",
                     use_auth_token=token,
                     vae=vae,
-                ).to(device)
+            ).to(device)
             text2img_unet.to(device)
             text2img = StableDiffusionPipeline(
                 vae=inpaint.vae,
@@ -1170,4 +1135,3 @@ elif args.debug:
     demo.queue().launch(**launch_kwargs)
 else:
     demo.queue().launch(**launch_kwargs)
-
