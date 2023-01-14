@@ -777,7 +777,7 @@ def get_model(token="", model_choice="", model_path=""):
                     model_name = "darkstorm2150/Protogen_x5.8_Official_Release"
                 elif model_choice == ModelChoice.MODEL_PG_DR.value:
                     model_name = "darkstorm2150/Protogen_Dragon_Official_Release"
-                elif model_choice == ModelChoice.MODEL_PG_DR.value:
+                elif model_choice == ModelChoice.MODEL_DL_PR.value:
                     model_name = "dreamlike-art/dreamlike-photoreal-2.0"
                 elif model_choice == ModelChoice.MODEL_P_P.value:
                     model_name = "wavymulder/portraitplus"
