@@ -457,14 +457,14 @@ class StableDiffusion:
                 model_name = model_path
         vae = AutoencoderKL.from_pretrained("stabilityai/sd-vae-ft-mse")
         if device == "cuda" and not args.fp32:
-            vae.to(torch.float16)
+            vae.to(torch.float32)
         if original_checkpoint:
             print(f"Converting & Loading {model_path}")
             from convert_checkpoint import convert_checkpoint
 
             pipe = convert_checkpoint(model_path)
             if device == "cuda" and not args.fp32:
-                pipe.to(torch.float16)
+                pipe.to(torch.float32)
             text2img = StableDiffusionPipeline(
                 vae=vae,
                 text_encoder=pipe.text_encoder,
@@ -479,8 +479,8 @@ class StableDiffusion:
             if device == "cuda" and not args.fp32:
                 text2img = StableDiffusionPipeline.from_pretrained(
                     model_name,
-                    revision="fp16",
-                    torch_dtype=torch.float16,
+                    revision="fp32",
+                    torch_dtype=torch.float32,
                     use_auth_token=token,
                     vae=vae,
                 )
@@ -503,8 +503,8 @@ class StableDiffusion:
             if device == "cuda" and not args.fp32:
                 inpaint = StableDiffusionInpaintPipeline.from_pretrained(
                     "runwayml/stable-diffusion-inpainting",
-                    revision="fp16",
-                    torch_dtype=torch.float16,
+                    revision="fp32",
+                    torch_dtype=torch.float32,
                     use_auth_token=token,
                     vae=vae,
                 ).to(device)
