@@ -60,6 +60,10 @@ class ModelChoice(Enum):
     MODEL_2_0 = "stablediffusion-2.0"
     MODEL_1_5 = "stablediffusion-1.5"
     MODEL_1_4 = "stablediffusion-1.4"
+    MODEL_PG_58 = "Protogen_x5.8_Official_Release"
+    MODEL_PG_DR = "Protogen_Dragon_Official_Release"
+    MODEL_DL_PR = "dreamlike-photoreal-2.0"
+    MODEL_P_P = "portraitplus"
 
 
 try:
@@ -769,6 +773,16 @@ def get_model(token="", model_choice="", model_path=""):
                     model_name = "stabilityai/stable-diffusion-2"
                 elif model_choice == ModelChoice.MODEL_2_1.value:
                     model_name = "stabilityai/stable-diffusion-2-1-base"
+                elif model_choice == ModelChoice.MODEL_PG_58.value:
+                    model_name = "darkstorm2150/Protogen_x5.8_Official_Release"
+                elif model_choice == ModelChoice.MODEL_PG_DR.value:
+                    model_name = "darkstorm2150/Protogen_Dragon_Official_Release"
+                elif model_choice == ModelChoice.MODEL_PG_DR.value:
+                    model_name = "dreamlike-art/dreamlike-photoreal-2.0"
+                elif model_choice == ModelChoice.MODEL_P_P.value:
+                    model_name = "wavymulder/portraitplus"
+
+
             tmp = StableDiffusion(
                 token=token, model_name=model_name, model_path=model_path
             )
